@@ -1,2 +1,2 @@
 # BASH-run-hub
-A serious tackle at making a useful tool. Designed to provide a user-friendly directory for running quick scripts in a BASH enviroment. 
+A serious tackle at making a useful tool. Designed to provide a user-friendly directory for running quick scripts in a BASH enviroment. Not yet finished. Check seahay.xyz for info and updates that sound better that whatever shoddy notes I end up pushing...
