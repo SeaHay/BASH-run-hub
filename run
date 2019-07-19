@@ -1,0 +1,78 @@
+#!/bin/bash
+
+ls ~/quikscripts | sort | nl -s': ' -w3 > ./.scriptList   #Find each file in ./quikscripts/ and sort them, then place them in.scriptList
+printf "\n\n" >> ./.scriptList                            #Print two newlines
+echo "  C: Cancel" >> ./.scriptList                       #add in cancel option
+
+if [ -z $1 ]; then   #If the first arg isn't blank for run:
+  AUTOMATE=0
+  # echo "<DEBUG> process not automated!"
+else
+  AUTOMATE=1
+  # echo "<DEBUG> process automated!"
+fi
+
+echo "Welcome to SeaHay's improved run script!"
+echo "The current list of commands goes as follows: "
+echo " "
+
+cat ./.scriptList                                         #Print the .scriptList file
+
+echo " "
+
+if [ $AUTOMATE -eq 0 ]; then   #Ask user for input if run isn't automated
+  echo "Select a file: "
+  read -p "> " SELECTION
+else
+  SELECTION=$1
+fi
+
+if [[ $SELECTION =~ [Cc]|[Cc]ancel ]]; then   #If SELECTION is a varient of 'C'
+  # echo "<DEBUG> Canceled!"
+  exit 0
+fi
+
+if [ $SELECTION -ge 1 ] 2> /dev/null; then          #If $SELECTION was a number 1 or greater
+  # echo "<DEBUG> selected by number"
+  LINES=$(wc -l ./.scriptList | tr -cd [:digit:])   #Find total # of lines in scriptList
+  # echo "<DEBUG> LINES var = '$LINES'"
+  # echo "<DEBUG> for loop should run through numbers as"
+  # printf "`seq 0 $(( $LINES - 1 ))`\n"
+  for i in $(seq 0 $(( $LINES - 1 )))               #For each line in scriptList
+  do
+    # echo "<DEBUG> i var is on iteration $i"
+    SLINE=$(head -n-$i ./.scriptList | tail -1 | tr -cd [:digit:])      #grabs only the number from the scriptList line
+    # echo "<DEBUG> SLINE var = '$SLINE'"
+    if [ $SLINE -eq $SELECTION ]; then                                  #If the number from the scriptList line matches user's selection
+      OUTPUT=$(head -n-$i ./.scriptList | tail -1 | tr -cd [:alpha:])   #Set selection to program name and strip any numbers or spaces
+      # echo "<DEBUG> OUTPUT var = '$OUTPUT'"
+    fi
+  done
+else
+# echo "<DEBUG> selected by name"
+OUTPUT=$SELECTION   #Set OUTPUT to SELECTION if the user typed the name instead of the number
+fi
+
+# echo "<DEBUG> '$OUTPUT' was the selection you made with '$SELECTION'"
+
+rm ./.scriptList   #Be kind and remove the temporary file
+
+
+echo "Running '$OUTPUT'..."
+. ~/quikscripts/$OUTPUT   #Run file from the quikscripts folder
+
+
+
+exit 0   #Exit successfully
+
+          ##################################################
+         #                                                #
+        #                                                #
+       #   ┌-┬-----------------------------┬-┐          #
+      #    |*|  ════════════════════════   |*|         #
+     #     |*| SeaHay's Stamp of Usability |*|        #
+    #      |*|  ════════════════════════   |*|       #
+   #       └-┴-----------------------------┴-┘      #
+  #                                                #
+ #                                                #
+##################################################
